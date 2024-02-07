@@ -14,6 +14,8 @@ public class DefaultComparatorSupplier {
     }
 
     public static Comparator<Match> get() {
-        throw new UnsupportedOperationException();
+        return Comparator.<Match>comparingInt(m -> m.homeScore() + m.awayScore())
+                .thenComparing(Match::startedAt)
+                .reversed();
     }
 }
