@@ -1,5 +1,7 @@
 package org.scoreboard;
 
+import org.scoreboard.internal.ScoreboardImpl;
+
 import java.util.List;
 
 /**

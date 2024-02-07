@@ -1,14 +1,17 @@
-package org.scoreboard;
+package org.scoreboard.internal;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.scoreboard.MatchSummary;
+import org.scoreboard.Scoreboard;
 
 import java.util.function.BiConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.scoreboard.TestUtils.assertThrowsOnFirstAndSecondAndBothArgumentsAreEqualTo;
 
-class ScoreboardTest {
+class ScoreboardImplTest {
 
     static final String HOME_TEAM1 = "homeTeam1";
     static final String HOME_TEAM2 = "homeTeam2";
@@ -21,7 +24,7 @@ class ScoreboardTest {
 
     @BeforeEach
     public void init() {
-        scoreboard = Scoreboard.getDefaultInstance();
+        scoreboard = new ScoreboardImpl();
     }
 
     @Test
@@ -113,6 +116,19 @@ class ScoreboardTest {
 
         //then
         assertThrows(IllegalStateException.class, this::startFirstMatch);
+    }
+
+    @Test
+    public void startMatchWhenAnyTeamAlreadyPlaysShouldThrowException() {
+        //given
+        startFirstMatch();
+
+        //then
+        assertThrows(IllegalStateException.class, () -> scoreboard.startMatch(AWAY_TEAM1, HOME_TEAM1));
+        assertThrows(IllegalStateException.class, () -> scoreboard.startMatch(HOME_TEAM1, "otherTeam"));
+        assertThrows(IllegalStateException.class, () -> scoreboard.startMatch("otherTeam", HOME_TEAM1));
+        assertThrows(IllegalStateException.class, () -> scoreboard.startMatch("otherTeam", AWAY_TEAM1));
+        assertThrows(IllegalStateException.class, () -> scoreboard.startMatch(AWAY_TEAM1, "otherTeam"));
     }
 
     @Test
@@ -280,14 +296,6 @@ class ScoreboardTest {
                         thirdMatchSummary(2, 4),
                         secondMatchSummary(5, 1),
                         firstMatchSummary(3, 3));
-    }
-
-    // asserts throwing exception for all three cases that first, second or both arguments of a particular function have the specified testing value
-    static void assertThrowsOnFirstAndSecondAndBothArgumentsAreEqualTo(Class<? extends Throwable> expectedType,
-                                                                       BiConsumer<String, String> function, String testingValue) {
-        assertThrows(expectedType, () -> function.accept(testingValue, "other"));
-        assertThrows(expectedType, () -> function.accept("other", testingValue));
-        assertThrows(expectedType, () -> function.accept(testingValue, testingValue));
     }
 
     void startFirstMatch() {
