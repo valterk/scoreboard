@@ -1,6 +1,8 @@
 package org.scoreboard.internal.repository;
 
 import org.scoreboard.internal.model.Match;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,11 +16,14 @@ import java.util.stream.Stream;
  */
 public class InMemoryMatchRepository implements MatchRepository {
 
+    private static final Logger log = LoggerFactory.getLogger(InMemoryMatchRepository.class);
+
     private final Map<String, Match> homeMap = new HashMap<>();
     private final Map<String, Match> awayMap = new HashMap<>();
 
     @Override
     public void save(Match match) {
+        log.info("Saving a match - {}", match);
         Objects.requireNonNull(match, "Cannot save a null match");
 
         matchesForTeams(match.homeTeam(), match.awayTeam())
@@ -55,6 +60,7 @@ public class InMemoryMatchRepository implements MatchRepository {
 
     @Override
     public void remove(String homeTeam, String awayTeam) {
+        log.info("Removing the match between {} and {}", homeTeam, awayTeam);
         validateTeamName(homeTeam);
         validateTeamName(awayTeam);
 

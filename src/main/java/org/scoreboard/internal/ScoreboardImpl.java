@@ -7,6 +7,8 @@ import org.scoreboard.internal.convert.MatchToMatchSummaryConverter;
 import org.scoreboard.internal.model.Match;
 import org.scoreboard.internal.repository.InMemoryMatchRepository;
 import org.scoreboard.internal.repository.MatchRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.List;
@@ -17,6 +19,8 @@ import java.util.function.Function;
  * Default implementation of the {@link Scoreboard}.
  */
 public class ScoreboardImpl implements Scoreboard {
+
+    private static final Logger log = LoggerFactory.getLogger(ScoreboardImpl.class);
 
     private final MatchRepository matchRepository;
     private final Comparator<Match> matchComparator;
@@ -43,6 +47,7 @@ public class ScoreboardImpl implements Scoreboard {
 
     @Override
     public void startMatch(String homeTeam, String awayTeam) {
+        log.info("Starting new match between {} and {}", homeTeam, awayTeam);
         validateTeams(homeTeam, awayTeam);
 
         if (matchRepository.containsMatchForTeam(homeTeam)) {
@@ -57,6 +62,7 @@ public class ScoreboardImpl implements Scoreboard {
 
     @Override
     public void updateScore(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+        log.info("Updating a score for a match between {} and {} to {} - {}", homeTeam, awayTeam, homeScore, awayScore);
         validateTeams(homeTeam, awayTeam);
         validateScores(homeScore, awayScore);
 
@@ -68,6 +74,7 @@ public class ScoreboardImpl implements Scoreboard {
 
     @Override
     public void finishMatch(String homeTeam, String awayTeam) {
+        log.info("Finishing the match between {} and {}", homeTeam, awayTeam);
         validateTeams(homeTeam, awayTeam);
 
         matchRepository.get(homeTeam, awayTeam)

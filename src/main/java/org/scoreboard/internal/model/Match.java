@@ -1,6 +1,5 @@
 package org.scoreboard.internal.model;
 
-import org.scoreboard.Main;
 import org.scoreboard.internal.repository.MatchRepository;
 
 import java.time.Instant;

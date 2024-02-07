@@ -9,4 +9,8 @@ package org.scoreboard;
  * @param awayScore score of the away team
  */
 public record MatchSummary(String homeTeam, String awayTeam, int homeScore, int awayScore) {
+    @Override
+    public String toString() {
+        return String.format("%s %o - %o %s", homeTeam, homeScore, awayScore, awayTeam);
+    }
 }
